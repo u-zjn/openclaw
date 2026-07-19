@@ -189,7 +189,7 @@
 
 ### 4.4 甘特图
 
-![](assets/gantt_chart.png)
+![](gantt_chart.png)
 
 ## 第五章 技术选型表
 
