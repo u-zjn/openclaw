@@ -189,7 +189,7 @@
 
 ### 4.4 甘特图
 
-![](C:\Users\Administrator\Desktop\1组\gantt_chart.png)
+![](assets/gantt_chart.png)
 
 ## 第五章 技术选型表
 
