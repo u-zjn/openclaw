@@ -1,5 +1,6 @@
 # 文案内容创作与发布助手 
 
+
 ## 第一章 团队信息
 
 | 成员姓名 | 角色职责                                                     |
@@ -40,7 +41,7 @@
 | 发布引擎 | API 发布 | 通过开放平台 API 发布笔记 |
 | | 定时发布 | 设定具体时间到点自动发布 |
 | | 话题标签 | 自动添加推荐话题标签 |
-| 智能体协作 | 任务流水线 | Researcher → Writer+Designer → Publisher 全链路 |
+| 智能体协作 | 任务流水线 | Researcher → Analyst → Writer → Designer → Publisher 全链路 |
 | | 状态追踪 | 每个任务状态可查 |
 | 基础架构 | Agent 注册与路由 | 5 个 Agent 的注册和路由 |
 | | 日志审计 | 所有操作可追溯 |
@@ -82,7 +83,7 @@
 
 | 编号 | Given | When | Then |
 |:-----|:------|:------|:------|
-| AC-01 | 已配置 Researcher、Writer、Designer、Publisher、Analyst 五个 Agent | 执行 openclaw agents list | 输出中包含全部 5 个 Agent，状态均为 running |
+| AC-01 | 已配置 Researcher、Analyst、Writer、Designer、Publisher 五个 Agent | 执行 openclaw agents list | 输出中包含全部 5 个 Agent，状态均为 running |
 | AC-02 | 任一 Agent 运行异常（如超时、模型调用失败） | 查看 openclaw gateway logs | 日志中包含对应 Agent 的错误记录、时间戳和错误类型 |
 | AC-03 | Publisher 调用 API 发布笔记 | API 返回 5xx 服务端错误 | 系统自动重试最多 3 次，每次间隔 30 秒，并在日志中记录每次重试 |
 
@@ -93,6 +94,12 @@
 | AC-R1 | Researcher 接收到选题调研指令，关键词为"穿搭" | Agent 完成热搜采集 | 输出 hot-topics.md，包含多条热搜词，每条含热度指数、来源、采集时间戳 |
 | AC-R2 | Researcher 接收到爆款分析指令，附 1 个笔记链接 | Agent 完成分析 | 输出 competitor-notes.md，含标题、封面风格描述、正文结构分析、高频标签列表 |
 | AC-R3 | 定时任务已配置 | 24 小时后检查 | 输出目录中有当日新生成的热点简报文件 |
+
+#### 数据分析
+
+| 编号 | Given | When | Then |
+|:-----|:------|:------|:------|
+| AC-A1 | Analyst 接收到 Researcher 的热点简报 | 执行爆款拆解与选题评级 | 输出 commend-notes.md（爆款分析）和 topic-suggest.md（选题评级） |
 
 #### 笔记创作
 
@@ -119,11 +126,6 @@
 | AC-P2 | 设置发布时间为 T 时刻 | 系统触发发布 | 实际发布时间与 T 时刻的差值 ≤ 2 分钟 |
 | AC-P3 | Publisher 完成发布 | — | 输出 publish-log.md，含笔记标题、发布时间、编辑链接 |
 
-#### 数据复盘
-
-| 编号 | Given | When | Then |
-|:-----|:------|:------|:------|
-| AC-A1 | Analyst 接收到发布记录 | 执行数据采集 | 输出包含阅读量、点赞数、收藏数、评论数、分享数五项指标 |
 ## 第三章 系统架构设计
 
 ### 3.1 系统分层架构
@@ -134,13 +136,14 @@
 | Agent 名称 | 职责 | 输入 | 输出 | 设计原则 |
 |-----------|------|------|------|----------|
 | Researcher | 热点调研、爆款笔记分析、关键词挖掘 | 选题关键词 | 热点简报 + 爆款分析 | 专注内容调研分析 |
+| Analyst | 爆款拆解 + 选题评级（S/A/B/C） | 热点简报 | commend-notes.md, topic-suggest.md | 专注策略分析 |
 | Writer | 笔记正文创作、标题优化、文案风格适配 | Researcher简报 | 笔记正文 + 标题 + 标签 | 专注内容创作 |
 | Designer | 封面图生成、配图排版、视觉风格统一 | 笔记主题 + 文案 | 封面图.png | 专注视觉设计 |
 | Publisher | API发布、定时发送、标签话题管理 | 文案 + 封面 | 发布确认 + 链接 | 专注发布管理 |
-| Analyst | 笔记数据追踪、流量复盘、优化建议 | 发布记录 | 数据报告 | 专注数据分析 |
 
 ## Agent间消息格式规范
-- **Researcher → Writer**: 热点简报（JSON格式）
+- **Researcher → Analyst**: 热点简报（JSON格式）
+- **Analyst → Writer**: 选题分析报告 + 爆款笔记拆解（JSON格式）
 - **Writer → Designer**: 笔记主题 + 文案（文本格式）
 - **Designer → Publisher**: 封面图.png + 文案（文件+文本）
 - **Publisher → Analyst**: 发布记录（JSON格式）
@@ -154,10 +157,10 @@
 | image-generator | SVG 封面图生成 | 主题描述 + 尺寸 | 封面图 .png | Designer | write, exec |
 | multi-search-engine | 多引擎热点采集 | 关键词 + 平台 | 搜索结果报告 | Researcher  Analyst | web_search, web_fetch |
 | agent-browser | 网页内容提取 | URL | 结构化页面内容 | Researcher | exec |
-| topic-researcher | 热搜 + 爆款分析 + 关键词 | keyword, platform | hot-topics.md, competitor-notes.md, keyword-plan.md | Researcher | web_search, web_fetch, read, write |
-| script-writer | 笔记创作 + 标题 + emoji + 标签 | topic, style, ref_notes | note-content.md, titles.md, hashtags.md | Writer | read, write, edit |
-| publisher-bridge | 发布 + 定时 | content, cover, images, schedule | publish-log.md | Publisher | exec, write, read |
-| content-analyst | 数据复盘 + 流量 + 建议 | note_urls | weekly-report.md, optimization.md, topic-suggest.md | Analyst | web_search, web_fetch, read, write |
+| researcher | 热搜 + 爆款分析 + 关键词 | keyword, platform | hot-topics.md, competitor-notes.md, keyword-plan.md | Researcher | web_search, web_fetch, read, write |
+| writer | 笔记创作 + 标题 + emoji + 标签 | topic, style, ref_notes | note-content.md, titles.md, hashtags.md | Writer | read, write, edit |
+| publisher | 发布 | content, cover, images, schedule | publish-log.md | Publisher | exec, write, read |
+| analyst | 爆款拆解 + 选题评级（S/A/B/C） | 热点简报 | commend-notes.md, topic-suggest.md | Analyst | web_search, web_fetch, read, write |
 
 ## 第四章 项目进度计划
 
@@ -168,7 +171,7 @@
 |  | 10:00-11:30 | 五大Skill框架开发、类型封装、安全权限基础配置、安全规则初检 | Skill源码框架、permissions.json、技能文档 | 马松月，关雅馨 |
 |  | 14:00-15:30 | Skill业务逻辑开发、Webchat调试页面开发、API对接 | 可运行核心技能、Webchat页面、API鉴权配置 | 马松月，关雅馨，张家诺 |
 |  | 15:30-16:30 | Publisher、Analyst技能完善、Designer封面3:4适配、单Agent单元测试 | 完整全套Skill、标准封面样图、单元测试报告 | 马松月，关雅馨，张家诺 |
-|  | 16:30-17:30 | Researcher→Writer→Designer子流程联调、安全漏洞检测、当日代码提交、编写开发日志 | 子流程测试记录、安全检测报告、Day9开发日志 | 马松月，关雅馨，张家诺 |
+|  | 16:30-17:30 | Researcher→Analyst→Writer→Designer子流程联调、安全漏洞检测、当日代码提交、编写开发日志 | 子流程测试记录、安全检测报告、Day9开发日志 | 马松月，关雅馨，张家诺 |
 | **7月20日** | 08:30-10:00 | 飞书Gateway路由调优、全业务链路联调、Bug分级修复；文案&封面验收、项目文档完善；路演PPT制作、Demo录屏、交付物打包、提交最终代码 | 正常运行飞书路由、全链路测试记录、项目全套文档、PPT、Demo录屏、完整交付压缩包 | 马松月，关雅馨，张家诺 |
 
 ### 4.2 里程碑任务
@@ -217,7 +220,7 @@
 | 封面图 | output/covers/ | .png |
 | 配置 | openclaw.json | json |
 
-### 5.4 b站适配要点
+### 5.4 适配要点
 
 | 要求 | 方案 |
 |:-----|:------|
