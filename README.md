@@ -1,232 +1,167 @@
 # 文案内容创作与发布助手 
 
+## 项目名称
+一句话说明项目是什么：AI 驱动的文案内容创作与发布全流程自动化助手
 
-## 第一章 团队信息
+## 项目概述
+本项目旨在为内容创作者提供从选题调研、内容创作到发布管理的全流程自动化解决方案。通过多智能体协作模式，实现热点追踪、文案生成、封面设计和平台发布的一站式服务，帮助创作者提升内容生产效率和质量。系统支持单平台深度运营，聚焦笔记类内容创作场景，兼顾创作效率与内容质量。
 
-| 成员姓名 | 角色职责                                                     |
-| -------- | ------------------------------------------------------------ |
-| 马松月   | 项目经理兼架构师：需求管理、进度跟踪、对外沟通、系统架构设计、Agent 分工、技术选型 |
-| 张家诺   | 开发工程师：Skill 编码、Agent 配置、集成联调                 |
-| 关雅馨   | 文档/测试：文档编写、测试用例、Demo 准备                     |
+## 功能特性
+- **选题调研**：自动抓取热搜关键词、分析爆款笔记结构、挖掘领域热词
+- **内容创作**：基于选题生成符合平台规范的正文、多风格标题和话题标签
+- **视觉设计**：根据笔记内容自动生成适配平台的 3:4 竖版封面图
+- **发布管理**：支持 API 一键发布和定时发布功能，自动添加话题标签
+- **智能协作**：多 Agent 分工协作，实现全流程自动化任务流水线
+- **状态追踪**：所有任务状态可查，操作日志完整可追溯
 
-## 第二章 需求分析
-
-### 2.1 用户故事
-
-| ID | 标题 | 故事描述 |
-|:--:|:----:|:--------:|
-| US-01 | 热点追踪 | 作为创作者，我希望 AI 自动抓取热搜和领域热门笔记，以便快速确定选题方向 |
-| US-02 | 笔记正文生成 | 作为创作者，我希望输入关键词就能生成完整的正文（含 emoji、排版），以便减少写作时间 |
-| US-03 | 标题优化 | 作为创作者，我希望 AI 生成 3-5 个风格的标题，以便提高点击率 |
-| US-04 | 封面生成 | 作为创作者，我希望 AI 根据笔记内容自动生成封面图（适配 3:4 竖版），以便提升视觉吸引力 |
-| US-05 | 标签话题推荐 | 作为创作者，我希望 AI 推荐相关话题标签和关键词，以便获得更多流量推荐 |
-| US-06 | 定时发布 | 作为创作者，我希望设定时间后 AI 通过 API 自动发布，以便利用流量高峰 |
-| US-07 | 数据复盘 | 作为创作者，我希望查看每篇笔记的阅读/点赞/收藏/评论数据和改进建议 |
-| US-08 | 系列笔记 | 作为创作者，我希望一次输入一个主题，AI 批量产出 3-5 篇系列笔记 |
-| US-09 | 多图配文 | 作为创作者，我希望上传多张素材图后 AI 自动排版生成图文笔记 |
-| US-10 | 评论管理 | 作为创作者，我希望 AI 辅助回复评论区高频问题 |
-
-### 2.2 MoSCoW 功能列表
-
-#### Must Have
-
-| 模块 | 功能 | 说明 |
-|:----:|:----:|:-----:|
-| 选题调研 | 热搜采集 | 抓取热搜词、领域热门笔记 |
-| | 爆款笔记分析 | 分析爆款笔记的结构、标题模式、标签组合 |
-| | 关键词挖掘 | 输入领域词，输出关联热词 |
-| 笔记创作 | 正文生成 | 按「标题 + 正文 + emoji + 话题标签」结构输出 |
-| | 标题生成 | 生成 3-5 个风格标题 |
-| | 正文适配 | 适配 500 字限制，段落 ≤ 5 行 |
-| 发布引擎 | API 发布 | 通过开放平台 API 发布笔记 |
-| | 定时发布 | 设定具体时间到点自动发布 |
-| | 话题标签 | 自动添加推荐话题标签 |
-| 智能体协作 | 任务流水线 | Researcher → Analyst → Writer → Designer → Publisher 全链路 |
-| | 状态追踪 | 每个任务状态可查 |
-| 基础架构 | Agent 注册与路由 | 5 个 Agent 的注册和路由 |
-| | 日志审计 | 所有操作可追溯 |
-
-#### Should Have
-
-| 模块 | 功能 | 说明 |
-|:----:|:----:|:-----:|
-| 数据复盘 | 笔记数据拉取 | 读取阅读量/点赞/收藏/评论/分享数据 |
-| | 流量分析 | 分析流量来源比例 |
-| | 优化建议 | 基于数据给出选题建议 |
-| 创作辅助 | 爆款拆解 | AI 分析结构和亮点 |
-| | 多图排版 | 多张图片自动排序配文 |
-| 审核流程 | 发布前预览 | 模拟信息流展示效果 |
-| | 一键发布 | 审核通过后发布 |
-| 封面设计 | 封面图生成 | SVG 生成 3:4 竖版封面 |
-|  | 文字叠加 | 封面叠加标题文字 |
-
-#### Could Have
-
-| 功能 | 说明 |
-|:----:|:-----:|
-| 批量生成系列笔记 | 输入主题，批量产出 7 天笔记规划 |
-| 评论区管理 | AI 辅助回复评论 |
-
-#### Won't Have
-
-| 功能 | 理由 |
-|:----:|:-----:|
-| 多平台适配 | 本次专注单平台 |
-| 直播管理 | 直播与笔记是不同场景 |
-| 私信自动化 | 涉及用户隐私 |
-| 电商带货 | 超出笔记范围 |
-| 原生 App | 优先飞书交互 |
-
-### 2.3 验收标准
-
-#### 基础架构
-
-| 编号 | Given | When | Then |
-|:-----|:------|:------|:------|
-| AC-01 | 已配置 Researcher、Analyst、Writer、Designer、Publisher 五个 Agent | 执行 openclaw agents list | 输出中包含全部 5 个 Agent，状态均为 running |
-| AC-02 | 任一 Agent 运行异常（如超时、模型调用失败） | 查看 openclaw gateway logs | 日志中包含对应 Agent 的错误记录、时间戳和错误类型 |
-| AC-03 | Publisher 调用 API 发布笔记 | API 返回 5xx 服务端错误 | 系统自动重试最多 3 次，每次间隔 30 秒，并在日志中记录每次重试 |
-
-#### 选题调研
-
-| 编号 | Given | When | Then |
-|:-----|:------|:------|:------|
-| AC-R1 | Researcher 接收到选题调研指令，关键词为"穿搭" | Agent 完成热搜采集 | 输出 hot-topics.md，包含多条热搜词，每条含热度指数、来源、采集时间戳 |
-| AC-R2 | Researcher 接收到爆款分析指令，附 1 个笔记链接 | Agent 完成分析 | 输出 competitor-notes.md，含标题、封面风格描述、正文结构分析、高频标签列表 |
-| AC-R3 | 定时任务已配置 | 24 小时后检查 | 输出目录中有当日新生成的热点简报文件 |
-
-#### 数据分析
-
-| 编号 | Given | When | Then |
-|:-----|:------|:------|:------|
-| AC-A1 | Analyst 接收到 Researcher 的热点简报 | 执行爆款拆解与选题评级 | 输出 commend-notes.md（爆款分析）和 topic-suggest.md（选题评级） |
-
-#### 笔记创作
-
-| 编号 | Given | When | Then |
-|:-----|:------|:------|:------|
-| AC-W1 | Writer 接收到 Researcher 的热点简报 | 触发"生成笔记正文"指令 | 在 60 秒内输出 note-content.md，且文件不为空 |
-| AC-W2 | Writer 完成笔记正文生成 | — | 正文总字数 ≤ 500 字，且每个段落 ≤ 5 行 |
-| AC-W3 | Writer 完成笔记正文生成 | 扫描正文内容 | 检测 emoji 字符，且分布在不同段落中 |
-| AC-W4 | Writer 接收到选题信息 | 执行标题生成 | 输出 titles.md，包含符合风格不同的标题（数字型、悬念型、反问型等） |
-| AC-W5 | Writer 完成笔记正文 | 执行标签推荐 | 输出 hashtags.md，包含 3-5 个相关话题标签 |
-
-#### 封面设计
-
-| 编号 | Given | When | Then |
-|:-----|:------|:------|:------|
-| AC-D1 | Designer 接收到笔记主题和标题 | 执行封面生成 | 输出封面图比例为 3:4，格式为 .png |
-| AC-D2 | Designer 完成封面图生成 | 检查封面图 | 图片叠加了笔记标题文字 |
-
-#### 发布引擎
-
-| 编号 | Given | When | Then |
-|:-----|:------|:------|:------|
-| AC-P1 | Publisher 接收到完整的笔记正文和封面图 | 调用开放平台 createnote API | API 返回 200 状态码，且返回笔记 ID 和编辑链接 |
-| AC-P2 | 设置发布时间为 T 时刻 | 系统触发发布 | 实际发布时间与 T 时刻的差值 ≤ 2 分钟 |
-| AC-P3 | Publisher 完成发布 | — | 输出 publish-log.md，含笔记标题、发布时间、编辑链接 |
-
-## 第三章 系统架构设计
-
-### 3.1 系统分层架构
+## 系统架构
+### 系统分层架构
 
 ![](架构图.png)
 
-### 3.2 Agent 详细设计表
-| Agent 名称 | 职责 | 输入 | 输出 | 设计原则 |
+### Agent 分工与交互流程
+| Agent 名称 | 职责 | 输入 | 输出 | 交互流程 |
 |-----------|------|------|------|----------|
-| Researcher | 热点调研、爆款笔记分析、关键词挖掘 | 选题关键词 | 热点简报 + 爆款分析 | 专注内容调研分析 |
-| Analyst | 爆款拆解 + 选题评级（S/A/B/C） | 热点简报 | commend-notes.md, topic-suggest.md | 专注策略分析 |
-| Writer | 笔记正文创作、标题优化、文案风格适配 | Researcher简报 | 笔记正文 + 标题 + 标签 | 专注内容创作 |
-| Designer | 封面图生成、配图排版、视觉风格统一 | 笔记主题 + 文案 | 封面图.png | 专注视觉设计 |
-| Publisher | API发布、定时发送、标签话题管理 | 文案 + 封面 | 发布确认 + 链接 | 专注发布管理 |
+| Researcher | 热点调研、爆款笔记分析、关键词挖掘 | 选题关键词 | 热点简报 + 爆款分析 | → Analyst |
+| Analyst | 爆款拆解 + 选题评级（S/A/B/C） | 热点简报 | commend-notes.md, topic-suggest.md | → Writer |
+| Writer | 笔记正文创作、标题优化、文案风格适配 | Researcher简报 | 笔记正文 + 标题 + 标签 | → Designer |
+| Designer | 封面图生成、配图排版、视觉风格统一 | 笔记主题 + 文案 | 封面图.png | → Publisher |
+| Publisher | API发布、定时发送、标签话题管理 | 文案 + 封面 | 发布确认 + 链接 | → Analyst（数据反馈） |
 
-## Agent间消息格式规范
-- **Researcher → Analyst**: 热点简报（JSON格式）
-- **Analyst → Writer**: 选题分析报告 + 爆款笔记拆解（JSON格式）
-- **Writer → Designer**: 笔记主题 + 文案（文本格式）
-- **Designer → Publisher**: 封面图.png + 文案（文件+文本）
-- **Publisher → Analyst**: 发布记录（JSON格式）
-- **Analyst → Researcher**: 数据报告（JSON格式）
+**消息格式规范**
+- Researcher → Analyst：热点简报（JSON格式）
+- Analyst → Writer：选题分析报告 + 爆款笔记拆解（JSON格式）
+- Writer → Designer：笔记主题 + 文案（文本格式）
+- Designer → Publisher：封面图.png + 文案（文件+文本）
+- Publisher → Analyst：发布记录（JSON格式）
+- Analyst → Researcher：数据报告（JSON格式）
 
-### 3.3 Skill 接口定义
+## 技术栈
+### 大模型
+- **DeepSeek V4 Flash**：核心推理引擎，中文能力强，响应速度快
+- **Moonshot Kimi**：兜底备用模型，支持超长上下文处理
 
-| Skill | 用途 | 输入 | 输出 | 负责 Agent | 依赖工具 |
-|:-----:|:----:|:----:|:----:|:----------:|:--------:|
-| agent-to-agent | Agent 文件接力 | 任务文件路径 | collab 接力文件 | 全部 | read, write, edit |
-| image-generator | SVG 封面图生成 | 主题描述 + 尺寸 | 封面图 .png | Designer | write, exec |
-| multi-search-engine | 多引擎热点采集 | 关键词 + 平台 | 搜索结果报告 | Researcher  Analyst | web_search, web_fetch |
-| agent-browser | 网页内容提取 | URL | 结构化页面内容 | Researcher | exec |
-| researcher | 热搜 + 爆款分析 + 关键词 | keyword, platform | hot-topics.md, competitor-notes.md, keyword-plan.md | Researcher | web_search, web_fetch, read, write |
-| writer | 笔记创作 + 标题 + emoji + 标签 | topic, style, ref_notes | note-content.md, titles.md, hashtags.md | Writer | read, write, edit |
-| publisher | 发布 | content, cover, images, schedule | publish-log.md | Publisher | exec, write, read |
-| analyst | 爆款拆解 + 选题评级（S/A/B/C） | 热点简报 | commend-notes.md, topic-suggest.md | Analyst | web_search, web_fetch, read, write |
+### 开发平台
+- **飞书**：消息协作平台，支持多 Bot 部署和 @ 触发
+- **Node.js**：后端开发语言，v24.0.0 或更高版本
+- **OpenClaw**：多智能体协作框架
 
-## 第四章 项目进度计划
+### 工具依赖
+- **Web Search/Fetch**：热点数据采集
+- **SVG/PNG 生成**：封面图设计
+- **API 调用**：平台发布功能
 
-### 4.1 任务进度总表
-| 日期 | 时间段 | 核心任务 | 交付物 | 负责人 |
-| :--- | :--- | :--- | :--- | :--- |
-| **7月19日** | 08:30-10:00 | Agent创建、workspace初始化、Git仓库搭建、5个Agent基础配置编写 | 项目分层目录、Agent配置文件 | 马松月 |
-|  | 10:00-11:30 | 五大Skill框架开发、类型封装、安全权限基础配置、安全规则初检 | Skill源码框架、permissions.json、技能文档 | 马松月，关雅馨 |
-|  | 14:00-15:30 | Skill业务逻辑开发、Webchat调试页面开发、API对接 | 可运行核心技能、Webchat页面、API鉴权配置 | 马松月，关雅馨，张家诺 |
-|  | 15:30-16:30 | Publisher、Analyst技能完善、Designer封面3:4适配、单Agent单元测试 | 完整全套Skill、标准封面样图、单元测试报告 | 马松月，关雅馨，张家诺 |
-|  | 16:30-17:30 | Researcher→Analyst→Writer→Designer子流程联调、安全漏洞检测、当日代码提交、编写开发日志 | 子流程测试记录、安全检测报告、Day9开发日志 | 马松月，关雅馨，张家诺 |
-| **7月20日** | 08:30-10:00 | 飞书Gateway路由调优、全业务链路联调、Bug分级修复；文案&封面验收、项目文档完善；路演PPT制作、Demo录屏、交付物打包、提交最终代码 | 正常运行飞书路由、全链路测试记录、项目全套文档、PPT、Demo录屏、完整交付压缩包 | 马松月，关雅馨，张家诺 |
+### 数据存储
+- Agent 协作数据：collab/ 目录（.md 格式）
+- 笔记文案：output/notes/ 目录（.md 格式）
+- 封面图：output/covers/ 目录（.png 格式）
+- 配置文件：openclaw.json（JSON 格式）
 
-### 4.2 里程碑任务
-| 编号 | 时间节点 | 里程碑名称 | 验收标准 |
-| :--- | :--- | :--- | :--- |
-| M1 | 7月19日 10:00 | 工程环境与基础配置初始化 | 工程环境、5个Agent基础配置初始化完成验收 |
-| M2 | 7月19日 11:30 | Skill框架与权限初稿 | 全部Skill框架与安全权限初稿验收完成 |
-| M3 | 7月19日 17:30 | 技能完善与子流程联调 | 五大技能完整可用、子流程联调、安全测试通过验收 |
-| M4 | 7月20日 10:00 | 全业务链路跑通 | 飞书路由正常、全业务流程完整跑通验收 |
-| M5 | 7月20日 10:00 | 最终交付物归档 | 全套文档、演示素材、最终代码交付验收 |
+## 快速开始
+### 环境要求
+- Node.js: v24.0.0 或更高版本
+- 操作系统: Ubuntu 24.04 (WSL2) / Linux / macOS
+- 内存: 8GB 以上（推荐 16GB）
+- 存储: 至少 20GB 可用空间
 
-### 4.3 风险预案
-| 序号 | 风险类别 | 具体应对措施 |
-| :--- | :--- | :--- |
-| 1 | 代码与接口风险 | 开发全程同步落地风险配置：LLM接口超时容错、图文本地缓存、消息重试机制、输入权限校验、Bug分级台账 |
-| 2 | 演示与环境风险 | 提前准备备用Demo录屏、Webchat离线调试通道、手机热点网络兜底方案 |
-| 3 | 文档归档风险 | 7月20日10点前汇总全部风险与对应预案，归档至项目文档 |
+### 安装步骤
+```bash
+# 克隆仓库到本地
+git clone https://github.com/u-zjn/openclaw.git
 
-### 4.4 甘特图
+# 安装项目依赖
+npm install
 
-![](gantt_chart.png)
+# 全局安装 OpenClaw CLI
+npm install -g openclaw-cli
+```
 
-## 第五章 技术选型表
+### 配置说明
+```bash
+# 备份默认配置
+cp openclaw.json openclaw.json.backup
 
-### 5.1 大模型选型
+# 编辑配置文件（需填入 API Key 等信息）
+vim openclaw.json
+```
 
-| 模型 | 厂商 | 用途 | 选择理由 |
-|:----:|:----:|:----:|:--------:|
-| DeepSeek V4 Flash | 深度求索 | 核心推理引擎 | 已配 API key；中文强；1-3s 响应 |
-| Moonshot Kimi | 月之暗面 | 兜底备用 | 已配置；超长上下文 |
+**关键配置项**：
+```json
+{
+  "gateway": {
+    "port": 3000,
+    "logLevel": "info"
+  },
+  "agents": {
+    "researcher": {
+      "enabled": true,
+      "apiKey": "YOUR_DEEPSEEK_API_KEY"
+    },
+    "analyst": {
+      "enabled": true,
+      "apiKey": "YOUR_DEEPSEEK_API_KEY"
+    },
+    "writer": {
+      "enabled": true,
+      "apiKey": "YOUR_DEEPSEEK_API_KEY"
+    },
+    "designer": {
+      "enabled": true,
+      "apiKey": "YOUR_DEEPSEEK_API_KEY"
+    },
+    "publisher": {
+      "enabled": true,
+      "zhihuCookie": "YOUR_ZHIHU_COOKIE"
+    }
+  }
+}
+```
 
-### 5.2 消息平台选型
+### 运行命令
+```bash
+# 启动 OpenClaw Gateway
+openclaw gateway start
 
-| 平台 | 多 Bot | @ 触发 | 群聊 | 审批流 | 费用 | 选型理由 |
-|:-----|:-------|:-------|:-----|:-------|:-----|:---------|
-| 飞书 ✅ | ✅ | ✅ | ✅ | ✅ | 免费 | 已配 5 个 Bot |
-| 企业微信 | ❌ | ✅ | ✅ | ✅ | 免费 | 多 Bot 受限 |
-| Telegram | ✅ | ✅ | ✅ | ❌ | 免费 | 无审批，国内受限 |
+# 启动所有 Agent
+openclaw agent start all
 
-### 5.3 存储选型
+# 执行全流程测试
+openclaw pipeline run full --input "领域关键词: 科技"
+```
 
-| 数据类型 | 存储方案 | 格式 |
-|:---------|:---------|:-----|
-| Agent 协作 | collab/ | .md |
-| 笔记文案 | output/notes/ | .md |
-| 封面图 | output/covers/ | .png |
-| 配置 | openclaw.json | json |
+## 项目结构
+```
+openclaw/
+├── collab/                 # Agent 协作数据目录
+├── output/                 # 输出目录
+│   ├── notes/             # 生成的笔记文案
+│   ├── covers/            # 生成的封面图
+│   └── zhihu-credentials.json  # 知乎发布配置
+├── researcher/            # Researcher Agent 代码
+├── analyst/               # Analyst Agent 代码
+├── writer/                # Writer Agent 代码
+├── designer/              # Designer Agent 代码
+├── publisher/             # Publisher Agent 代码
+├── openclaw.json          # 系统配置文件
+└── package.json           # 项目依赖配置
+```
 
-### 5.4 适配要点
+## 已知问题
+| Bug 描述 | 影响等级 | 状态 |
+|---------|----------|------|
+| 部分特殊关键词可能导致 Researcher 采集结果不准确 | 中 | 未修复 |
+| Designer 生成的封面图文字叠加位置偶尔偏移 | 低 | 未修复 |
+| 知乎发布时偶尔出现 Cookie 过期检测不及时 | 中 | 未修复 |
+| 大流量场景下 Gateway 性能可能下降 | 高 | 优化中 |
 
-| 要求 | 方案 |
-|:-----|:------|
-| 正文 ≤ 500 字 | prompt 约束 + 截断 |
-| 图片 ≤ 3 张 | 批量生成 |
-| 封面 3:4 | PNG |
-| 表情符号 | emoji 库 |
-| 标签 3-5 个 | Researcher 推荐 + Writer 嵌入 |
-| 敏感词 | LLM 自查 + 关键词过滤 |
+## 团队信息
+| 成员姓名 | 分工 |
+| -------- | ---- |
+| 马松月   | 项目经理兼架构师：需求管理、进度跟踪、对外沟通、系统架构设计、Agent 分工、技术选型 |
+| 张家诺   | 开发工程师：Skill 编码、Agent 配置、集成联调 |
+| 关雅馨   | 文档/测试：文档编写、测试用例、Demo 准备 |
+
+---
+
+**文档版本**: v2.0
+**最后更新**: 2026-07-20
