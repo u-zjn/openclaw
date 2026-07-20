@@ -132,6 +132,7 @@ openclaw pipeline run full --input "领域关键词: 科技"
 ## 项目结构
 ```
 workspace/
+├── openclaw.json          # 定义 API 密钥、模型提供商、网关端口及多智能体默认参数
 ├── analyst/               # Analyst Agent 目录
 │   ├── AGENTS.md          # Agent 配置文件
 │   ├── MEMORY.md          # Agent 记忆数据
@@ -267,4 +268,3 @@ workspace/
 
 **文档版本**: v2.0
 **最后更新**: 2026-07-20
-**维护团队**: 文案内容创作与发布助手团队
