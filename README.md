@@ -1,7 +1,7 @@
 # 文案内容创作与发布助手 
 
 ## 项目名称
-AI 驱动的文案内容创作与发布全流程自动化助手
+一句话说明项目是什么：AI 驱动的文案内容创作与发布全流程自动化助手
 
 ## 项目概述
 本项目旨在为内容创作者提供从选题调研、内容创作到发布管理的全流程自动化解决方案。通过多智能体协作模式，实现热点追踪、文案生成、封面设计和平台发布的一站式服务，帮助创作者提升内容生产效率和质量。系统支持单平台深度运营，聚焦笔记类内容创作场景，兼顾创作效率与内容质量。
@@ -131,19 +131,62 @@ openclaw pipeline run full --input "领域关键词: 科技"
 
 ## 项目结构
 ```
-openclaw/
-├── collab/                 # Agent 协作数据目录
-├── output/                 # 输出目录
-│   ├── notes/             # 生成的笔记文案
-│   ├── covers/            # 生成的封面图
-│   └── zhihu-credentials.json  # 知乎发布配置
-├── researcher/            # Researcher Agent 代码
-├── analyst/               # Analyst Agent 代码
-├── writer/                # Writer Agent 代码
-├── designer/              # Designer Agent 代码
-├── publisher/             # Publisher Agent 代码
-├── openclaw.json          # 系统配置文件
-└── package.json           # 项目依赖配置
+workspace/
+├── analyst/               # Analyst Agent 目录
+│   ├── AGENTS.md          # Agent 配置文件
+│   ├── MEMORY.md          # Agent 记忆数据
+│   └── SOUL.md            # Agent 核心逻辑
+├── designer/              # Designer Agent 目录
+│   ├── AGENTS.md          
+│   ├── MEMORY.md          
+│   └── SOUL.md            
+├── publisher/             # Publisher Agent 目录
+│   ├── AGENTS.md          
+│   ├── MEMORY.md          
+│   └── SOUL.md            
+├── researcher/            # Researcher Agent 目录
+│   ├── AGENTS.md          
+│   ├── MEMORY.md          
+│   └── SOUL.md            
+├── writer/                # Writer Agent 目录
+│   ├── AGENTS.md          
+│   ├── MEMORY.md          
+│   └── SOUL.md            
+├── skills/                # 技能库目录
+│   ├── analyst/           # Analyst 技能实现
+│   │   ├── __tests__/     # 测试用例目录
+│   │   ├── README.md      # 技能说明文档
+│   │   ├── index.ts       # 技能入口文件
+│   │   ├── types.ts       # 类型定义文件
+│   │   └── utils.ts       # 工具函数文件
+│   ├── designer/          # Designer 技能实现
+│   │   ├── __tests__/     
+│   │   ├── README.md      
+│   │   ├── index.ts       
+│   │   ├── types.ts       
+│   │   └── utils.ts       
+│   ├── researcher/    # 热点调研技能实现
+│   │   ├── __tests__/     
+│   │   ├── README.md      
+│   │   ├── index.ts       
+│   │   ├── types.ts       
+│   │   └── utils.ts       
+│   ├── publisher/         # Publisher 技能实现
+│   │   ├── __tests__/     
+│   │   ├── README.md      
+│   │   ├── index.ts       
+│   │   ├── types.ts       
+│   │   └── utils.ts       
+│   └── writer/            # Writer 技能实现
+│   │   ├── __tests__/     
+│   │   ├── README.md      
+│   │   ├── index.ts       
+│   │   ├── types.ts       
+│   │   └── utils.ts       
+├── API.md                 # API 接口文档
+├── README.md              # 项目说明文档
+├── gantt_chart.png        # 甘特图
+└── 架构图.png              # 系统架构图
 ```
 
 ## 已知问题
@@ -165,3 +208,4 @@ openclaw/
 
 **文档版本**: v2.0
 **最后更新**: 2026-07-20
+**维护团队**: 文案内容创作与发布助手团队
